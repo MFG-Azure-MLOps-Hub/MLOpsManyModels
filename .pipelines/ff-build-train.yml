@@ -1,0 +1,88 @@
+name: FF train model pipeline
+
+resources:
+  containers:
+  #- container: mlops
+  #  image: mcr.microsoft.com/mlops/python:latest
+  - container: mlops
+    image: garywamlcr.azurecr.io/public/mlops/python:latest
+    endpoint: acrconnection
+
+pr: none
+trigger:
+  branches:
+    include:
+    - master
+    - gary
+  paths:
+    include:
+    - ff/
+    - ml_service/pipelines/ff_train_model_pipeline.py
+    - ml_service/pipelines/ff_run_train_pipeline.py
+
+variables:
+- template: ff-variables.yml
+- group: mmmo-vg
+
+# pool: MachineLearningAgent
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: 'Model_CI'
+  displayName: 'Model CI'
+  jobs:
+  - job: "Model_CI_Pipeline"
+    displayName: "Model CI Pipeline"
+    container: mlops
+    timeoutInMinutes: 0
+    steps:
+    #- template: azdo-base-pipeline.yml
+    - task: AzureCLI@1
+      inputs:
+        azureSubscription: '$(WORKSPACE_SVC_CONNECTION)'
+        scriptLocation: inlineScript
+        workingDirectory: $(Build.SourcesDirectory)
+        inlineScript: |
+          set -e # fail on error
+          export SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+          # Invoke the Python building and publishing a training pipeline
+          python -m ml_service.pipelines.ff_build_train_pipeline
+      displayName: 'Publish Azure Machine Learning Pipeline'
+
+- stage: 'Trigger_AML_Pipeline'
+  displayName: 'Train model'
+  jobs:
+  - job: "Get_Pipeline_ID"
+    condition: and(succeeded(), eq(coalesce(variables['auto-trigger-training'], 'true'), 'true'))
+    displayName: "Get Pipeline ID for execution"
+    container: mlops
+    timeoutInMinutes: 0
+    steps:
+    - task: AzureCLI@1
+      inputs:
+        azureSubscription: '$(WORKSPACE_SVC_CONNECTION)'
+        scriptLocation: inlineScript
+        workingDirectory: $(Build.SourcesDirectory)
+        inlineScript: |
+          set -e # fail on error
+          export SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+          python -m ml_service.pipelines.ff_run_train_pipeline --output_pipeline_id_file "pipeline_id.txt" --skip_train_execution
+          # Set AMLPIPELINEID variable for next AML Pipeline task in next job
+          AMLPIPELINEID="$(cat pipeline_id.txt)"
+          echo "##vso[task.setvariable variable=AMLPIPELINEID;isOutput=true]$AMLPIPELINEID"
+      name: 'getpipelineid'
+      displayName: 'Get Pipeline ID'
+  - job: "Run_ML_Pipeline"
+    dependsOn: "Get_Pipeline_ID"
+    displayName: "Trigger ML Training Pipeline"
+    pool: server
+    variables:
+      AMLPIPELINE_ID: $[ dependencies.Get_Pipeline_ID.outputs['getpipelineid.AMLPIPELINEID'] ]
+    steps:
+    - task: ms-air-aiagility.vss-services-azureml.azureml-restApi-task.MLPublishedPipelineRestAPITask@0
+      displayName: 'Invoke ML pipeline'
+      inputs:
+        azureSubscription: '$(WORKSPACE_SVC_CONNECTION)'
+        PipelineId: '$(AMLPIPELINE_ID)'
+        ExperimentName: '$(EXPERIMENT_NAME)'

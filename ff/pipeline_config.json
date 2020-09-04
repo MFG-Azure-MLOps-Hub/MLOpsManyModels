@@ -1,0 +1,42 @@
+{
+    "pipeline_parameter": [
+        {
+            "pipeline_name": "nyc_energy",
+            "source_blob_url": "https://garywamlsa.blob.core.windows.net/azureml-blobstore-c0f42772-6fc0-4e5a-9a4c-1cc37a170721/input/nyc_energy.csv",
+            "data_file": "nyc_energy.csv", 
+            "features": "timeStamp,demand,precip,temp",
+            "model_name": "nyc_energy_model",
+            "automl_settings": {
+                "task": "forecasting",
+                "primary_metric": "normalized_mean_absolute_error",
+                "blocked_models": "['ExtremeRandomTrees', 'AutoArima', 'Prophet']",
+                "experiment_timeout_hours": 0.3,
+                "label_column_name": "demand",
+                "enable_early_stopping": 1,
+                "n_cross_validations": 3,
+                "time_column_name": "timeStamp",
+                "max_horizon": 48,
+                "verbosity": 20,
+                "debug_log": "automl_nyc_energy_errors.log"
+            }
+        },
+        {
+            "pipeline_name": "diabetes",
+            "source_blob_url": "https://garywamlsa.blob.core.windows.net/azureml-blobstore-c0f42772-6fc0-4e5a-9a4c-1cc37a170721/input/diabetes.csv",
+            "data_file": "diabetes.csv", 
+            "features": "AGE,SEX,BMI,BP,S1,S2,S3,S4,S5,S6,Y",
+            "model_name": "diabetes_model",
+            "automl_settings": {
+                "task": "regression",
+                "primary_metric": "normalized_mean_absolute_error",
+                "iteration_timeout_minutes": 2,
+                "iterations": 3,
+                "experiment_timeout_hours": 0.3,
+                "label_column_name": "Y",
+                "n_cross_validations": 3,
+                "verbosity": 20,
+                "debug_log": "automl_diabetes_errors.log"
+            }
+        }
+    ]
+}

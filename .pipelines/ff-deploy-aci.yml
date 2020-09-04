@@ -1,0 +1,50 @@
+name: FF Deploy ACI pipeline
+
+resources:
+  containers:
+  #- container: mlops
+  #  image: mcr.microsoft.com/mlops/python:latest
+  - container: mlops
+    image: garywamlcr.azurecr.io/public/mlops/python:latest
+    endpoint: acrconnection
+
+pr: none
+trigger:
+  branches:
+    include:
+    - master
+    - gary
+  paths:
+    include:
+    - ff
+    - ml_service/pipelines/ff_build_train_pipeline.py
+    - ml_service/pipelines/ff_deploy_aci_pipeline.py
+
+variables:
+- template: ff-variables.yml
+- group: mmmo-vg
+
+# pool: MachineLearningAgent
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: 'Deploy_ACI'
+  displayName: 'Deploy to ACI'
+  jobs:
+  - job: "Deploy_ACI"
+    displayName: "Deploy to ACI"
+    container: mlops
+    timeoutInMinutes: 0
+    steps:
+    - task: AzureCLI@1
+      inputs:
+        azureSubscription: '$(WORKSPACE_SVC_CONNECTION)'
+        scriptLocation: inlineScript
+        workingDirectory: $(Build.SourcesDirectory)
+        inlineScript: |
+          set -e # fail on error
+          export SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+          python -m ml_service.pipelines.ff_deploy_aci_pipeline --aci_deployment_name "$(ACI_DEPLOYMENT_NAME)"
+      name: 'deployaci'
+      displayName: 'Deploy ACI'
