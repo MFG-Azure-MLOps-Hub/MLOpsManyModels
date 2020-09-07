@@ -13,11 +13,8 @@ trigger:
   branches:
     include:
     - master
-    - gary
   paths:
     include:
-    - ff
-    - ml_service/pipelines/ff_build_train_pipeline.py
     - ml_service/pipelines/ff_deploy_aci_pipeline.py
 
 variables:
@@ -31,6 +28,7 @@ pool:
 stages:
 - stage: 'Deploy_ACI'
   displayName: 'Deploy to ACI'
+  condition: and(succeeded(), variables['ACI_DEPLOYMENT_NAME'])
   jobs:
   - job: "Deploy_ACI"
     displayName: "Deploy to ACI"

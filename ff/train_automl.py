@@ -17,7 +17,8 @@ import logging
 current_step_run = Run.get_context()
 
 parser = argparse.ArgumentParser("split")
-parser.add_argument("--process_count_per_node", default=1, type=int, help="number of processes per node")
+parser.add_argument("--process_count_per_node", default=1, type=int,
+                    help="number of processes per node")
 args, _ = parser.parse_known_args()
 
 
@@ -34,16 +35,18 @@ pipe_param = read_pipeline_config()
 def init():
     # EntryScriptHelper().config(LOG_NAME)
     # logger = logging.getLogger(LOG_NAME)
-    # Assumes the environment variable APPLICATIONINSIGHTS_CONNECTION_STRING is already set
+    # APPLICATIONINSIGHTS_CONNECTION_STRING needs to be set
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     logger.addHandler(logging.StreamHandler())
     logger.addHandler(AzureLogHandler())
 
-    output_folder = os.path.join(os.environ.get("AZ_BATCHAI_INPUT_AZUREML", ""), "temp/output")
+    output_folder = os.path.join(
+        os.environ.get("AZ_BATCHAI_INPUT_AZUREML", ""), "temp/output")
     working_dir = os.environ.get("AZ_BATCHAI_OUTPUT_logs", "")
     ip_addr = os.environ.get("AZ_BATCHAI_WORKER_IP", "")
-    log_dir = os.path.join(working_dir, "user", ip_addr, current_process().name)
+    log_dir = os.path.join(
+        working_dir, "user", ip_addr, current_process().name)
     t_log_dir = Path(log_dir)
     t_log_dir.mkdir(parents=True, exist_ok=True)
 
@@ -61,7 +64,8 @@ def get_automl_settings(file_path):
             model_name = param['model_name']
             automl_settings = param['automl_settings']
             automl_settings['many_models'] = True
-            automl_settings['many_models_process_count_per_node'] = args.process_count_per_node
+            automl_settings['many_models_process_count_per_node'] = \
+                args.process_count_per_node
     return model_name, automl_settings
 
 
@@ -153,21 +157,23 @@ def run(input_data):
             # logger_str = str(logger_dict)
 
             # Write the log in json format
-            logger_str='{\"pipeline\":\"'+current_step_run.parent.id+\
-                        '\",\"file\":\"'+file_name+file_extension+\
-                        '\",\"model\":\"'+model_name+\
-                        '\",\"start\":\"'+str(date1)+\
-                        '\",\"end\":\"'+str(date2)+\
-                        '\",\"duration\":\"'+str(date2-date1)+\
-                        '\",\"status\":\"'+current_run.get_status()+'\"}'
+            logger_str = '{\"pipeline\":\"' + current_step_run.parent.id +\
+                         '\",\"file\":\"' + file_name + file_extension +\
+                         '\",\"model\":\"' + model_name +\
+                         '\",\"start\":\"' + str(date1) +\
+                         '\",\"end\":\"' + str(date2) +\
+                         '\",\"duration\":\"' + str(date2 - date1) +\
+                         '\",\"status\":\"' + current_run.get_status() + '\"}'
             logger.info(logger_str)
             logger.info('ending (' + file_path + ') ' + str(date2))
 
         # 10.1 Log the error message if an exception occurs
-        except (ValueError, UnboundLocalError, NameError, ModuleNotFoundError, AttributeError, ImportError,
-                FileNotFoundError, KeyError, ClientException, AutoMLException) as error:
+        except (ValueError, UnboundLocalError, NameError, ModuleNotFoundError,
+                AttributeError, ImportError, FileNotFoundError, KeyError,
+                ClientException, AutoMLException) as error:
             date2 = datetime.datetime.now()
-            error_message = 'Failed to train the model. ' + 'Error message: ' + str(error)
+            error_message = 'Failed to train the model. ' +\
+                            'Error message: ' + str(error)
             # trace_message = traceback.format_exc()
 
             logs.append('AutoML')
@@ -182,13 +188,13 @@ def run(input_data):
             idx += 1
 
             # Write the log in json format
-            logger_str='{\"pipeline\":\"'+current_step_run.parent.id+\
-                        '\",\"file\":\"'+file_name+file_extension+\
-                        '\",\"model\":\"'+model_name+\
-                        '\",\"start\":\"'+str(date1)+\
-                        '\",\"end\":\"'+str(date2)+\
-                        '\",\"duration\":\"'+str(date2-date1)+\
-                        '\",\"status\":\"Failed\"}'
+            logger_str = '{\"pipeline\":\"' + current_step_run.parent.id +\
+                         '\",\"file\":\"' + file_name + file_extension +\
+                         '\",\"model\":\"' + model_name +\
+                         '\",\"start\":\"' + str(date1) +\
+                         '\",\"end\":\"' + str(date2) +\
+                         '\",\"duration\":\"' + str(date2 - date1) +\
+                         '\",\"status\":\"Failed\"}'
             logger.info(logger_str)
 
             logger.info(error_message)

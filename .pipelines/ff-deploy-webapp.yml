@@ -13,11 +13,9 @@ trigger:
   branches:
     include:
     - master
-    - gary
   paths:
     include:
-    - ff/
-    - ml_service/pipelines/ff_build_train_pipeline.py
+    - ml_service/pipelines/ff_create_scoring_image.py
 
 variables:
 - template: ff-variables.yml

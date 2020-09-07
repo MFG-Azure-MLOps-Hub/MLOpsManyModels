@@ -12,7 +12,7 @@ description: "Sample code"
 
 # Machine Learning DevOps for Many Models
 This is a sample about how to implement pipelines for processing many machine learning models, including data preparation, model training and web service deployment.
-
+## Background
 We are asked to train different models for the following use cases:
 - [Forecast energy demand](https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/automated-machine-learning/forecasting-energy-demand)
   - Dataset: /data/nyc_energy.csv
@@ -28,7 +28,8 @@ Train the two use case models in parallel, choose the best model and register th
 ### Deploy models into ACI or Web App
 - ACI (Azure Container Instance) deployment: package the models and deploy them into a single ACI
 - Web App deployment: package the models and deploy them into a single Web App   
-## /.pipelines
+## Code description
+### /.pipelines
 Azure DevOps Pipelines
 - ff-prepare-data.yml: copy data and filter out needed columns and save it to the target storage container and folder.
 - ff-build-train.yml: train many models by using AutoML, choose and register the best models in parallel 
@@ -39,7 +40,7 @@ Variables are defined in:
 - ff-variables.yml 
 - Azure DevOps variable group: mmmo-vg
 
-## /ff
+### /ff
 Python scripts
 - scoring/score.py
 - util/helper.py
@@ -50,7 +51,7 @@ Python scripts
 - prepare.py
 - train_automl.py
 
-## /ml_service
+### /ml_service
 Azure ML pipelines & tools
 - pipelines/ff_build_train_pipeline.py
 - pipelines/ff_run_train_pipeline.py
