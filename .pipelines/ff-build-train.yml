@@ -13,7 +13,6 @@ trigger:
   branches:
     include:
     - master
-    - gary
   paths:
     include:
     - ff/

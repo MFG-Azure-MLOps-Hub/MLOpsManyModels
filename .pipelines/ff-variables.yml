@@ -14,27 +14,27 @@ variables:
   - name: AML_CLUSTER_PRIORITY
     value: lowpriority
     # Training Config
-  - name: BUILD_TRAIN_SCRIPT
-    value: ff_build_train_pipeline.py
-  - name: TRAIN_SCRIPT_PATH
-    value: train_automl.py
-  - name: MODEL_NAME
-    value: ff_model.pkl
-  - name: MODEL_VERSION
-    value: "1"
+  # - name: BUILD_TRAIN_SCRIPT
+  #   value: ff_build_train_pipeline.py
+  # - name: TRAIN_SCRIPT_PATH
+  #   value: train_automl.py
+  # - name: MODEL_NAME
+  #   value: ff_model.pkl
+  # - name: MODEL_VERSION
+  #   value: "1"
     # AML Pipeline Config
-  - name: TRAINING_PIPELINE_NAME
-    value: "FF-Training-Pipeline"
-  - name: MODEL_PATH
-    value: ""
-  - name: EVALUATE_SCRIPT_PATH
-    value: evaluate/evaluate_model.py
-  - name: REGISTER_SCRIPT_PATH
-    value: register/register_model.py
+  # - name: TRAINING_PIPELINE_NAME
+  #   value: "FF-Training-Pipeline"
+  # - name: MODEL_PATH
+  #   value: ""
+  # - name: EVALUATE_SCRIPT_PATH
+  #   value: evaluate/evaluate_model.py
+  # - name: REGISTER_SCRIPT_PATH
+  #   value: register/register_model.py
   - name: SOURCES_DIR_TRAIN
     value: ff
-  - name: IMAGE_NAME
-    value: "ff-img"
+  # - name: IMAGE_NAME
+  #   value: "ff-img"
   # Optional. Used by a training pipeline with R on Databricks
   # - name: DB_CLUSTER_ID
   #  value: ""

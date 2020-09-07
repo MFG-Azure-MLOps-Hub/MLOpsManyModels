@@ -1,10 +1,13 @@
 import json
 
 
+# Wait until all of the runs are finished
 def are_all_runs_finished(runs):
     for run in runs:
         status = run.get_status()
-        if status != 'Finished' and status != 'Failed' and status != 'Canceled':
+        if status != 'Finished' and \
+           status != 'Failed' and \
+           status != 'Canceled':
             return False
     return True
 
