@@ -31,7 +31,7 @@ Train the two use case models in parallel, choose the best model and register th
 ## System architecture
 The system architecture is shown as below.
 <div style="align: center">
-<img src="images/architecture.PNG" alt="architecture" width="200">
+<img src="images/architecture.PNG" alt="architecture" width="600">
 </div>
 <p style="text-align: center;">Figure 1. Architecture</p>
 
