@@ -13,21 +13,45 @@ description: "Sample code"
 # Machine Learning DevOps for Many Models
 This is a sample about how to implement pipelines for processing many machine learning models, including data preparation, model training and web service deployment.
 ## Background
-We are asked to train different models for the following use cases:
+We plan to train different models for the following use cases:
 - [Forecast energy demand](https://github.com/Azure/MachineLearningNotebooks/tree/master/how-to-use-azureml/automated-machine-learning/forecasting-energy-demand)
   - Dataset: /data/nyc_energy.csv
 - [Regression for diabetes](https://azure.microsoft.com/en-us/services/open-datasets/catalog/sample-diabetes/)
   - Dataset: /data/diabetes.csv
 
-The following steps will be taken for these two use cases.
+The following steps will be taken:
 ### Prepare data
 - Copy data: the two datasets need to be copied from the original storage to the system defined Azure Blob Storage and container.
 - Prepare data: filter out the unuseful columns from the original datasets.
-### Train model
+### Train models
 Train the two use case models in parallel, choose the best model and register them.
 ### Deploy models into ACI or Web App
 - ACI (Azure Container Instance) deployment: package the models and deploy them into a single ACI
 - Web App deployment: package the models and deploy them into a single Web App   
+## System architecture
+The system architecture is shown as below.
+<div style="align: center">
+<img src="images/architecture.PNG" alt="architecture">
+</div>
+<p style="text-align: center;">Figure 1. Architecture</p>
+
+The data scientists access Azure Machine Learning and Azure Blob Storage to do the experiments to prepare the data, train the models and test the model performance. 
+
+The software engineers use Azure Machine Learning and Azure Blob Storage to extract the source code for data preparation and model training and build the MLOps pipelines to automate the whole process. This process is not only about preparing data and training models, but also include deploying models into Azure Web Apps or Azure Container Instances.
+
+When the models are deployed, the end users can consume the models in real time, by sending requests to the URLs of the Azure Web Apps or Azure Container Instances.
+
+
+<div style="align: center">
+<img src="images/pipelines.PNG" alt="pipelines">
+</div>
+<p style="text-align: center;">Figure 2. Pipelines</p>
+
+As Figure 2 shows above, there are 3 Azure pipelines have been set:
+- Prepare data pipeline: runs 2 AML pipelines in which contains two steps, 'Copy Data' and 'Prepare Data'.
+- Train model pipeline: runs an AML pipeline which trains models in parallel by using ParallelRunStep
+- Deploy ACI pipeline: package the models and deploy them into a single ACI
+- Deploy WebApp pipeline: package the models and deploy them into a single Azure Web App
 ## Code description
 ### /.pipelines
 Azure DevOps Pipelines
