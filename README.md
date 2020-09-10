@@ -162,3 +162,4 @@ ff-deploy-webapp.yml -> ff_create_scoring_image.py -> score.py
 
 ## References
 [Official MLOps Python project](https://github.com/microsoft/MLOpsPython)
+[Many Models Solution Accelerator](https://github.com/microsoft/solution-accelerator-many-models/)
