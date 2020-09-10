@@ -142,10 +142,10 @@ ff-deploy-webapp.yml -> ff_create_scoring_image.py -> score.py
 
 ### Consume Web Services
 #### Using web browsers
-- http://xxx.eastasia.azurecontainer.io/score?model_name=nyc_energy_model&data=[["2017-8-12 7:00",0,70],["2017-8-12 19:00",0,50]]
-- http://xxx.eastasia.azurecontainer.io/score?model_name=diabetes_model&data=[[1,2,3,4,5,6,7,8,9,0],[56,33,11,88,0,43,6,8,1,68]]
+- `http://xxx.eastasia.azurecontainer.io/score?model_name=nyc_energy_model&data=[["2017-8-12 7:00",0,70],["2017-8-12 19:00",0,50]]`
+- `http://xxx.eastasia.azurecontainer.io/score?model_name=diabetes_model&data=[[1,2,3,4,5,6,7,8,9,0],[56,33,11,88,0,43,6,8,1,68]]`
 #### Using Postman
-- URL: https://your_webapp_name.azurewebsites.net/score
+- URL: `https://your_webapp_name.azurewebsites.net/score`
 - Body-raw:
 {
 	"model_name": "nyc_energy_model",
