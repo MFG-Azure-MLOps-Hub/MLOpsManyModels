@@ -31,7 +31,7 @@ Train the two use case models in parallel, choose the best model and register th
 ## System architecture
 The system architecture is shown as below.
 <div style="align: center">
-<img src="images/architecture.PNG" alt="architecture">
+<img src="images/architecture.PNG" alt="architecture" width="200">
 </div>
 <p style="text-align: center;">Figure 1. Architecture</p>
 
@@ -94,8 +94,8 @@ Create a variable group 'mmmo-vg' with the following variables:
 | --------------------------- | -----------------------------------|
 | BASE_NAME                   | [unique base name]                 |
 | LOCATION                    | [resrouce group location]          |
-| RESOURCE_GROUP              | mmmo-RG                            |
-| WORKSPACE_NAME              | mmmo-AML-WS                        |
+| RESOURCE_GROUP              | [your resource group name]         |
+| WORKSPACE_NAME              | [your AML WS name]                 |
 | WORKSPACE_SVC_CONNECTION    | aml-workspace-connection           | 
 | ACI_DEPLOYMENT_NAME         | [your ACI name]                    |
 | AZURE_RM_SVC_CONNECTION     | azure-resource-connection          |
@@ -115,6 +115,12 @@ aml-workspace-connection
 
 ### Create Docker Registry service connection
 acrconnection
+
+### Enter variables about train storage and application insights
+Since we'll use the default storage and application insights provided by Azure Machine Learning Workspace, you need to find out and fill in the following variables for 'mmmo-vg':
+- TRAIN_STORAGE_CONNECTION_STRING
+- TRAIN_STORAGE_CONTAINER
+- APPLICATIONINSIGHTS_CONNECTION_STRING
 
 ### Run Docker Image Pipeline
 Run /environment_setup/docker-image-pipeline.yml
@@ -139,7 +145,7 @@ ff-deploy-webapp.yml -> ff_create_scoring_image.py -> score.py
 - http://xxx.eastasia.azurecontainer.io/score?model_name=nyc_energy_model&data=[["2017-8-12 7:00",0,70],["2017-8-12 19:00",0,50]]
 - http://xxx.eastasia.azurecontainer.io/score?model_name=diabetes_model&data=[[1,2,3,4,5,6,7,8,9,0],[56,33,11,88,0,43,6,8,1,68]]
 #### Using Postman
-- URL: https://<your webapp name>.azurewebsites.net/score
+- URL: https://your_webapp_name.azurewebsites.net/score
 - Body-raw:
 {
 	"model_name": "nyc_energy_model",
