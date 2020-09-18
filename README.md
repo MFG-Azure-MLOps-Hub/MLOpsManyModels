@@ -132,6 +132,10 @@ Edit /ff/pipeline_config.json
 Run /.pipelines/ff-build-train.yml
 ff-build-train.yml -> ff_build_train_pipeline.py & ff_run_train_pipeline.py -> train_automl.py
 
+### Check the Logs for the Build Train Pipeline
+Run /ff/kql/model_train_summary.kql in your ApplicationInsights
+Remember to change the pipeline ID
+
 ### Run Deploy ACI Pipeline
 Run /.pipelines/ff-deploy-aci.yml
 ff-deploy-aci.yml -> ff_deploy_aci_pipeline.py -> score.py

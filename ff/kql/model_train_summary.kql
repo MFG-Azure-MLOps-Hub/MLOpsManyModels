@@ -1,0 +1,8 @@
+traces
+| where message contains "xxxxxxxxxxxxxxxxx" //Pipeline Run ID
+| project js=parse_json(message)
+| project pipeline=js.pipeline, file=js.file, model=js.model, status=js.status,start=todatetime(js.start),end=todatetime(js.end),duration=totimespan(js.duration)/time(1m)
+//| render columnchart with(ycolumns=duration,file, xcolumn=start)
+//| evaluate bag_unpack(js)
+| summarize duration=sum(duration) by tostring(model),tostring(status)
+| render barchart
